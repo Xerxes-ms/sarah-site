@@ -1,0 +1,1945 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<title>Serah Can Do Everything</title>
+
+<!-- Pixel font (loads from the web; falls back to monospace when offline) -->
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet" />
+
+<style>
+/* ==========================================================================
+   0. PALETTE / ROOT  — cosy pastel (cute & girly) theme, edit to reskin
+   ========================================================================== */
+:root{
+  --bg0:#fff3f9;
+  --bg1:#ffe9f4;
+  --bg2:#efe9ff;
+  --panel:#fffafd;
+  --panel2:#ffe9f4;
+  --ink:#4a3358;
+  --muted:#75619c;
+  --purple:#efb8ef;      /* lavender pink — fills & buttons (main colour) */
+  --purple-d:#b14ab4;    /* deep lavender pink — text & titles */
+  --pink:#ff9ec9;
+  --pink-d:#e8458a;      /* vivid pink — readable accents on light */
+  --gold:#d48806;        /* warm amber — buttons (dark text on them) */
+  --green:#6fe6a4;       /* mint — button fills / titles on dark */
+  --green-d:#0e9d5f;     /* deep mint — text on light panels */
+  --red:#ff7d97;         /* soft red — titles on dark overlays */
+  --red-d:#d6355f;       /* deep red — text on light panels */
+  --cyan:#8fe8ff;        /* light cyan — score text on dark overlays */
+  --shadow:#4a3358;
+  --border:4px;
+}
+
+*{ box-sizing:border-box; }
+
+html,body{ height:100%; }
+
+body{
+  margin:0;
+  background:linear-gradient(180deg, var(--bg0) 0%, var(--bg1) 55%, var(--bg2) 100%);
+  color:var(--ink);
+  font-family:'Press Start 2P', ui-monospace, 'Courier New', monospace;
+  font-size:clamp(10px, 2.4vw, 13px);
+  line-height:1.8;
+  overflow-x:hidden;
+  -webkit-tap-highlight-color:transparent;
+  touch-action:manipulation;
+  user-select:none;
+}
+
+/* Subtle pixel grid behind everything */
+body::before{
+  content:'';
+  position:fixed; inset:0; z-index:9998; pointer-events:none;
+  background:
+    linear-gradient(rgba(233,168,236,.14) 1px, transparent 1px) 0 0 / 32px 32px,
+    linear-gradient(90deg, rgba(233,168,236,.14) 1px, transparent 1px) 0 0 / 32px 32px;
+}
+/* Soft scanlines (gentle — cosy, not harsh CRT) */
+body::after{
+  content:'';
+  position:fixed; inset:0; z-index:9999; pointer-events:none; opacity:.16;
+  background:repeating-linear-gradient(to bottom, rgba(120,70,140,.18) 0 1px, transparent 1px 3px);
+}
+
+.hidden{ display:none !important; }
+
+/* ==========================================================================
+   1. LAYOUT / SCREENS
+   ========================================================================== */
+#app{ position:relative; z-index:1; min-height:100vh; min-height:100dvh; display:flex; }
+
+.screen{
+  display:none;
+  flex:1;
+  flex-direction:column;
+  align-items:center;
+  justify-content:center;
+  gap:18px;
+  padding:22px 16px calc(22px + env(safe-area-inset-bottom));
+  text-align:center;
+}
+.screen.active{ display:flex; animation:screenIn .3s steps(5) both; }
+
+@keyframes screenIn{
+  from{ opacity:0; transform:translateY(14px); }
+  to  { opacity:1; transform:translateY(0); }
+}
+
+/* ==========================================================================
+   2. PIXEL UI BLOCKS (panels, buttons, text)
+   ========================================================================== */
+.panel{
+  background:var(--panel);
+  border:var(--border) solid var(--ink);
+  box-shadow:10px 10px 0 var(--shadow);
+  padding:clamp(18px, 4vw, 32px);
+  width:min(680px, 100%);
+}
+
+.title{
+  margin:0 0 14px;
+  font-size:clamp(16px, 4.6vw, 30px);
+  line-height:1.5;
+  color:var(--gold);
+  text-shadow:4px 4px 0 var(--shadow);
+}
+.title.purple{ color:var(--purple-d); }
+.title.red{ color:var(--red); }
+.title.green{ color:var(--green); }
+
+.sub{ color:var(--muted); font-size:clamp(9px, 2.2vw, 12px); margin:6px 0; }
+
+.hint{
+  color:var(--muted);
+  font-size:clamp(8px, 2vw, 10px);
+  letter-spacing:1px;
+  margin:0;
+  animation:blinkSlow 1.6s steps(2, jump-none) infinite;
+}
+@keyframes blinkSlow{ 50%{ opacity:.35; } }
+
+/* --- typewriter text --- */
+.typed{
+  min-height:2.2em;
+  margin:0 0 10px;
+  font-size:clamp(13px, 3.6vw, 22px);
+  line-height:1.7;
+  color:var(--ink);
+}
+.caret{
+  display:inline-block;
+  width:.7em; height:1.1em;
+  background:var(--gold);
+  vertical-align:-.18em;
+  margin-left:4px;
+  animation:caretBlink .7s steps(2, jump-none) infinite;
+}
+@keyframes caretBlink{ 50%{ opacity:0; } }
+
+/* --- buttons --- */
+.btn{
+  font-family:inherit;
+  font-size:clamp(10px, 2.6vw, 14px);
+  line-height:1.5;
+  color:#101024;
+  background:var(--gold);
+  border:var(--border) solid var(--shadow);
+  box-shadow:0 6px 0 var(--shadow);
+  padding:14px 22px;
+  cursor:pointer;
+  letter-spacing:1px;
+  transition:transform .05s steps(1), box-shadow .05s steps(1), filter .1s;
+}
+.btn:hover{ filter:brightness(1.12); }
+.btn:active{ transform:translateY(6px); box-shadow:0 0 0 var(--shadow); }
+.btn:focus-visible{ outline:3px solid var(--purple-d); outline-offset:4px; }
+
+.btn-purple{ background:var(--purple); color:#0f0d1c; }
+.btn-green { background:var(--green);  color:#08210f; }
+.btn-ghost { background:var(--panel2); color:var(--ink); border-color:var(--ink); }
+
+/* --- Serah sprite --- */
+.sprite-frame{
+  position:relative;
+  display:inline-block;
+  padding:10px;
+  background:radial-gradient(circle at 50% 60%, rgba(255,158,201,.40), transparent 70%);
+}
+.hero-sprite{
+  display:block;
+  width:clamp(110px, 26vw, 190px);
+  height:auto;
+  image-rendering:pixelated;
+  image-rendering:crisp-edges;
+  animation:bob 1.4s steps(4) infinite;
+  filter:drop-shadow(6px 6px 0 rgba(74,51,88,.40));
+}
+@keyframes bob{ 50%{ transform:translateY(-10px); } }
+
+.sprite-tag{
+  display:inline-block;
+  margin-top:8px;
+  padding:6px 10px;
+  background:var(--purple);
+  color:#100d1e;
+  border:3px solid var(--shadow);
+  font-size:clamp(8px, 2vw, 11px);
+}
+
+/* ==========================================================================
+   3. GAME SCREEN
+   ========================================================================== */
+.hud{
+  display:flex;
+  align-items:center;
+  gap:12px;
+  width:min(960px, 100%);
+}
+.hud-cell{ display:flex; flex-direction:column; gap:4px; text-align:left; }
+.hud-cell.right{ text-align:right; align-items:flex-end; }
+.hud-label{ font-size:clamp(7px, 1.8vw, 9px); color:var(--muted); letter-spacing:1px; }
+.hud-value{ font-size:clamp(13px, 3vw, 19px); color:var(--purple-d); text-shadow:3px 3px 0 rgba(74,51,88,.28); }
+.hud-value.gold{ color:var(--pink-d); }
+
+.hud-bar{
+  flex:1;
+  height:18px;
+  background:#3a2f56;
+  border:3px solid var(--ink);
+  box-shadow:4px 4px 0 rgba(74,51,88,.35);
+  overflow:hidden;
+}
+.hud-bar-fill{
+  height:100%;
+  width:0%;
+  background:repeating-linear-gradient(90deg, var(--purple) 0 8px, var(--purple-d) 8px 16px);
+  transition:width .15s linear;
+}
+
+.game-wrap{
+  position:relative;
+  width:min(960px, 100%);
+  touch-action:none;
+}
+
+/* day / night indicator floating over the game */
+.time-badge{
+  position:absolute;
+  top:8px; left:8px;
+  padding:5px 9px;
+  background:rgba(255,250,253,.92);
+  color:var(--pink-d);
+  border:3px solid var(--shadow);
+  box-shadow:3px 3px 0 rgba(74,51,88,.45);
+  font-size:clamp(7px, 1.8vw, 10px);
+  letter-spacing:1px;
+  pointer-events:none;
+}
+.time-badge.night{
+  background:rgba(43,29,64,.92);
+  color:#cbbcf2;
+  border-color:#cbbcf2;
+  box-shadow:3px 3px 0 rgba(20,14,40,.55);
+}
+#gameCanvas{
+  display:block;
+  width:100%;
+  height:clamp(210px, 30vw, 330px);
+  background:#bfe6ff;
+  border:var(--border) solid var(--ink);
+  box-shadow:10px 10px 0 var(--shadow);
+  image-rendering:pixelated;
+}
+
+.overlay{
+  position:absolute;
+  inset:0;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:center;
+  gap:12px;
+  background:rgba(43,29,64,.88);
+  padding:14px;
+  text-align:center;
+}
+.overlay .title{ margin:0; }
+.score-big{
+  margin:0;
+  font-size:clamp(13px, 3.2vw, 20px);
+  color:var(--cyan);
+  text-shadow:3px 3px 0 var(--shadow);
+}
+
+/* sound toggle */
+.sound-btn{
+  position:fixed;
+  right:10px; bottom:10px;
+  z-index:10000;
+  font-family:inherit;
+  font-size:12px;
+  padding:9px 11px;
+  background:var(--panel2);
+  color:var(--ink);
+  border:3px solid var(--ink);
+  box-shadow:4px 4px 0 var(--shadow);
+  cursor:pointer;
+}
+
+/* pixel music player */
+.music-player{
+  position:fixed;
+  right:10px; bottom:62px;
+  z-index:10000;
+  width:min(250px, calc(100vw - 20px));
+  padding:8px 9px;
+  background:var(--panel2);
+  border:3px solid var(--ink);
+  box-shadow:4px 4px 0 var(--shadow);
+  font-size:9px;
+}
+.music-top{ display:flex; align-items:center; gap:6px; margin-bottom:7px; }
+.music-note{ color:var(--purple-d); }
+.music-player.playing .music-note{ animation:noteBlink .7s steps(2) infinite; }
+@keyframes noteBlink{ 50%{ opacity:.25; } }
+.music-title{
+  flex:1; min-width:0;
+  overflow:hidden; white-space:nowrap; text-overflow:ellipsis;
+  color:var(--ink);
+}
+.music-count{ color:var(--muted); font-size:8px; }
+.music-controls{ display:flex; gap:6px; }
+.mbtn{
+  flex:1;
+  font-family:inherit; font-size:10px; line-height:1.4;
+  padding:7px 4px;
+  background:var(--purple); color:var(--ink);
+  border:3px solid var(--ink);
+  box-shadow:3px 3px 0 var(--shadow);
+  cursor:pointer;
+}
+.mbtn-play{ background:var(--green); }
+.mbtn:hover{ background:var(--pink); }
+.mbtn-play:hover{ background:var(--green); }
+.mbtn:active{ transform:translate(2px,2px); box-shadow:1px 1px 0 var(--shadow); }
+.music-bar{
+  margin-top:7px; height:10px;
+  background:#ffffff;
+  border:3px solid var(--ink);
+}
+.music-bar > i{
+  display:block; height:100%; width:0%;
+  background:var(--purple-d);
+}
+@media (max-width:480px){
+  .music-player{ bottom:58px; right:6px; width:min(210px, calc(100vw - 12px)); }
+}
+
+/* ==========================================================================
+   4. TRIVIA
+   ========================================================================== */
+.progress-row{
+  display:flex; justify-content:space-between; gap:10px;
+  width:100%;
+  font-size:clamp(8px, 2vw, 10px);
+  color:var(--muted);
+  margin-bottom:14px;
+}
+.question{
+  font-size:clamp(12px, 3.2vw, 17px);
+  line-height:1.7;
+  margin:0 0 18px;
+  color:var(--pink-d);
+}
+.answers{ display:flex; flex-direction:column; gap:12px; }
+.btn-answer{
+  text-align:left;
+  background:var(--panel2);
+  color:var(--ink);
+  border-color:var(--ink);
+  box-shadow:0 5px 0 var(--shadow);
+}
+.btn-answer.correct{ background:var(--green); color:#08210f; border-color:var(--shadow); }
+.btn-answer.wrong  { background:var(--red);   color:#2a0410; border-color:var(--shadow); }
+.btn-answer.dim    { opacity:.4; }
+
+.feedback{
+  margin:16px 0 0;
+  padding:12px;
+  border:3px dashed var(--muted);
+  font-size:clamp(9px, 2.4vw, 12px);
+  line-height:1.7;
+}
+.feedback.good{ border-color:var(--green-d); color:var(--green-d); }
+.feedback.bad { border-color:var(--red-d);   color:var(--red-d); }
+
+.trivia-score{
+  font-size:clamp(26px, 8vw, 46px);
+  color:var(--pink-d);
+  text-shadow:5px 5px 0 rgba(74,51,88,.25);
+  margin:10px 0;
+}
+
+/* ==========================================================================
+   5. FINALE
+   ========================================================================== */
+.confetti{
+  position:fixed; inset:0; z-index:9997; pointer-events:none; overflow:hidden;
+}
+.confetti i{
+  position:absolute; top:-6%;
+  width:10px; height:10px;
+  animation:fall linear forwards;
+}
+@keyframes fall{
+  to{ transform:translateY(115vh) rotate(720deg); }
+}
+
+.final-msg{
+  font-size:clamp(14px, 4vw, 24px);
+  color:var(--purple-d);
+  text-shadow:4px 4px 0 rgba(74,51,88,.25);
+  margin:6px 0 4px;
+}
+
+/* ==========================================================================
+   6. RESPONSIVE
+   ========================================================================== */
+@media (max-width:560px){
+  .hud{ flex-wrap:wrap; }
+  .hud-bar{ order:3; flex-basis:100%; }
+  #gameCanvas{ height:clamp(200px, 52vw, 280px); }
+  .panel{ box-shadow:6px 6px 0 var(--shadow); }
+}
+@media (max-height:520px){
+  .screen{ gap:10px; padding:10px; }
+  #gameCanvas{ height:clamp(150px, 42vh, 220px); }
+  .hero-sprite{ width:clamp(70px, 16vh, 120px); }
+}
+</style>
+</head>
+
+<body>
+
+<!-- ============================================================
+     1. INTRO — typing "This is Serah,"
+     ============================================================ -->
+<section class="screen active" id="screen-intro">
+  <div class="panel">
+    <p class="typed" id="introTyped" aria-live="polite"><span class="type-target"></span><span class="caret"></span></p>
+
+    <div class="sprite-frame">
+      <img class="hero-sprite" id="introSprite" alt="Serah, the pixel art main character" />
+    </div>
+    <div><span class="sprite-tag">PLAYER 1 : SERAH</span></div>
+
+    <p class="hint" id="introHint">loading sprite...</p>
+    <button class="btn btn-green hidden" id="startBtn">&#9654; START</button>
+  </div>
+</section>
+
+<!-- ============================================================
+     2. GAME — endless runner
+     ============================================================ -->
+<section class="screen" id="screen-game">
+  <div class="hud">
+    <div class="hud-cell">
+      <span class="hud-label">SCORE</span>
+      <span class="hud-value" id="scoreValue">0000</span>
+    </div>
+    <div class="hud-bar"><div class="hud-bar-fill" id="progressFill"></div></div>
+    <div class="hud-cell right">
+      <span class="hud-label">TARGET</span>
+      <span class="hud-value gold" id="targetValue">2002</span>
+    </div>
+  </div>
+
+  <div class="game-wrap" id="gameWrap">
+    <div class="time-badge" id="timeBadge">&#9728; SUNNY DAY</div>
+    <canvas id="gameCanvas"></canvas>
+
+    <!-- game over -->
+    <div class="overlay hidden" id="overlayOver">
+      <h2 class="title red">GAME OVER</h2>
+      <p class="score-big">SCORE <span id="overScore">0</span> / 2002</p>
+      <p class="sub">BEST <span id="bestScore">0000</span> &middot; Serah tripped. She is fine. Probably.</p>
+      <button class="btn btn-green" id="retryBtn">&#8635; RETRY</button>
+      <p class="hint">press SPACE or tap</p>
+    </div>
+
+    <!-- victory -->
+    <div class="overlay hidden" id="overlayWin">
+      <h2 class="title green">YOU WIN!</h2>
+      <p class="score-big">SCORE 2002 / 2002</p>
+      <p class="sub">She really did run all the way.</p>
+      <button class="btn btn-purple" id="winContinueBtn">CONTINUE &#9654;</button>
+    </div>
+  </div>
+
+  <p class="hint">SPACE / &#8593; / TAP = JUMP &nbsp;&middot;&nbsp; sunny day turns to calm night at 1000 &nbsp;&middot;&nbsp; reach 2002 to win</p>
+</section>
+
+<!-- ============================================================
+     3. VICTORY TEXT
+     ============================================================ -->
+<section class="screen" id="screen-victory">
+  <div class="panel">
+    <p class="typed" id="victoryTyped" aria-live="polite"><span class="type-target"></span><span class="caret"></span></p>
+    <div class="sprite-frame">
+      <img class="hero-sprite" id="victorySprite" alt="Serah celebrating" />
+    </div>
+    <button class="btn btn-purple hidden" id="victoryContinueBtn">NEXT: TRIVIA &#9654;</button>
+    <p class="hint" id="victoryHint">click or press SPACE to skip</p>
+  </div>
+</section>
+
+<!-- ============================================================
+     4. TRIVIA
+     ============================================================ -->
+<section class="screen" id="screen-trivia">
+  <div class="panel">
+    <!-- one question at a time -->
+    <div id="quizBox">
+      <div class="progress-row">
+        <span id="qCounter">QUESTION 1 / 15</span>
+        <span id="qScore">SCORE 0</span>
+      </div>
+      <p class="question" id="qText">...</p>
+      <div class="answers" id="answersBox"></div>
+      <p class="feedback hidden" id="feedback"></p>
+      <button class="btn btn-purple hidden" id="nextBtn" style="margin-top:16px;">NEXT &#9654;</button>
+    </div>
+
+    <!-- final trivia result -->
+    <div id="resultBox" class="hidden">
+      <h2 class="title purple">TRIVIA COMPLETE</h2>
+      <p class="trivia-score" id="finalScore">0/15</p>
+      <p class="sub" id="resultMsg"></p>
+      <button class="btn btn-green" id="toFinalBtn">CONTINUE &#9654;</button>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================
+     5. FINAL SCREEN
+     ============================================================ -->
+<section class="screen" id="screen-final">
+  <div class="panel">
+    <p class="typed" id="finalTyped" aria-live="polite"><span class="type-target"></span><span class="caret"></span></p>
+    <div class="sprite-frame">
+      <img class="hero-sprite" id="finalSprite" alt="Serah" />
+    </div>
+
+    <div id="finalAction" class="hidden">
+      <button class="btn btn-gold" id="mobileLegendBtn" style="background:var(--gold);">Now open your MLBB.</button>
+    </div>
+
+    <div id="finalFinale" class="hidden">
+      <p class="final-msg">&#9733; &#9733; &#9733;</p>
+      <p class="sub">GG WP! Serah, you are pure magic — kind, fearless, and the best teammate anyone could ask for.</p>
+      <button class="btn btn-ghost" id="replayBtn" style="margin-top:10px;">&#8635; Play from the start</button>
+    </div>
+
+    <p class="hint" id="finalHint">click or press SPACE to skip</p>
+  </div>
+</section>
+
+<button class="sound-btn" id="soundBtn" title="Toggle sound" aria-label="Toggle sound">&#128266;</button>
+
+<!-- pixel music player: songs live in ./music -->
+<div class="music-player" id="musicPlayer" title="music player">
+  <div class="music-top">
+    <span class="music-note">&#9835;</span>
+    <span class="music-title" id="musicTitle">loading…</span>
+    <span class="music-count" id="musicCount">1/4</span>
+  </div>
+  <div class="music-controls">
+    <button class="mbtn" id="musicPrev" title="previous song" aria-label="Previous song">&#9664;&#9664;</button>
+    <button class="mbtn mbtn-play" id="musicPlay" title="play / pause" aria-label="Play or pause">&#9654;</button>
+    <button class="mbtn" id="musicNext" title="next song" aria-label="Next song">&#9654;&#9654;</button>
+  </div>
+  <div class="music-bar"><i id="musicBarFill"></i></div>
+</div>
+
+<script>
+/* ==========================================================================
+   SERAH — "SHE CAN DO EVERYTHING"
+   A single-file pixel-art mini site: intro -> endless runner -> trivia -> end.
+
+   >>> IMAGE PATH IS SET HERE (CONFIG.SPRITE_SOURCES) <<<
+   Put your photo next to this index.html and use its exact file name.
+   The first file that exists/loads wins; the others are only fallbacks.
+   ========================================================================== */
+const CONFIG = {
+  // ---- REPLACE / EDIT THESE with your own photo file name(s) -------------
+  SPRITE_SOURCES: [
+    "main character (2).png",   // <-- main character image (currently used)
+    "main character.png",       // fallback (delete if unused)
+    "serah.png"                 // fallback (delete if unused)
+  ],
+  // -----------------------------------------------------------------------
+  FLIP_SPRITE: false,        // true = mirror the sprite (if she faces left)
+  TARGET_SCORE: 2002,        // score needed to WIN the run
+  NIGHT_AT: 1000,            // score where sunny day cross-fades to calm night
+  START_SPEED: 330,          // world speed at score 0 (design px / sec)
+  SPEED_PER_POINT: 0.13,     // how fast the game accelerates
+  SCORE_PER_PX: 0.09,        // points earned per pixel travelled
+  GRAVITY: 2600,             // px / sec^2 (design space)
+  JUMP_V: 950,               // jump velocity (design px / sec) — fixed arc, tap = hold
+  SFX: true                  // sound on/off at start
+};
+
+/* ==========================================================================
+   1. HELPERS
+   ========================================================================== */
+const $  = (sel) => document.querySelector(sel);
+const $$ = (sel) => Array.from(document.querySelectorAll(sel));
+const rand = (a, b) => a + Math.random() * (b - a);
+const clamp = (v, a, b) => Math.max(a, Math.min(b, v));
+const pad4 = (n) => String(Math.floor(n)).padStart(4, "0");
+
+/* --- colour helpers (used for the sunny-day -> calm-night cross-fade) --- */
+function hexToRgb(h) {
+  const n = parseInt(h.slice(1), 16);
+  return [(n >> 16) & 255, (n >> 8) & 255, n & 255];
+}
+/* blend two "#rrggbb" colours, t = 0 (a) .. 1 (b) */
+function mixHex(a, b, t) {
+  const A = hexToRgb(a), B = hexToRgb(b);
+  const r = Math.round(A[0] + (B[0] - A[0]) * t);
+  const g = Math.round(A[1] + (B[1] - A[1]) * t);
+  const bl = Math.round(A[2] + (B[2] - A[2]) * t);
+  return "rgb(" + r + "," + g + "," + bl + ")";
+}
+
+/* ==========================================================================
+   2. SOUND (tiny WebAudio blips — no external files)
+   ========================================================================== */
+const SFX = {
+  ctx: null,
+  muted: !CONFIG.SFX,
+  ensure() {
+    if (!this.ctx) {
+      try { this.ctx = new (window.AudioContext || window.webkitAudioContext)(); }
+      catch (e) { this.ctx = null; }
+    }
+    if (this.ctx && this.ctx.state === "suspended") this.ctx.resume();
+  },
+  beep(freq, dur = 0.08, type = "square", vol = 0.05, delay = 0) {
+    if (this.muted) return;
+    this.ensure();
+    if (!this.ctx) return;
+    const t0 = this.ctx.currentTime + delay;
+    const osc = this.ctx.createOscillator();
+    const gain = this.ctx.createGain();
+    osc.type = type;
+    osc.frequency.setValueAtTime(freq, t0);
+    gain.gain.setValueAtTime(vol, t0);
+    gain.gain.exponentialRampToValueAtTime(0.0001, t0 + dur);
+    osc.connect(gain).connect(this.ctx.destination);
+    osc.start(t0);
+    osc.stop(t0 + dur + 0.02);
+  },
+  jump()   { this.beep(660, 0.09, "square", 0.05); },
+  hit()    { this.beep(140, 0.25, "sawtooth", 0.06); },
+  correct(){ this.beep(740, 0.07); this.beep(980, 0.1, "square", 0.05, 0.08); },
+  wrong()  { this.beep(200, 0.18, "sawtooth", 0.05); },
+  win()    { [523, 659, 784, 1047].forEach((f, i) => this.beep(f, 0.16, "square", 0.06, i * 0.13)); }
+};
+
+/* ==========================================================================
+   3. SCREENS + TYPEWRITER
+   ========================================================================== */
+const screens = $$(".screen");
+let currentScreen = "screen-intro";
+
+function showScreen(id) {
+  currentScreen = id;
+  screens.forEach((s) => s.classList.toggle("active", s.id === id));
+  window.scrollTo(0, 0);
+}
+
+/* Types text character by character. Returns an object with .skip() */
+function typewriter(panel, text, { speed = 65, onDone = null } = {}) {
+  const target = panel.querySelector(".type-target");
+  const caret = panel.querySelector(".caret");
+  target.textContent = "";
+  let i = 0;
+  let timer = null;
+  let finished = false;
+
+  function finish() {
+    if (finished) return;
+    finished = true;
+    clearInterval(timer);
+    timer = null;
+    target.textContent = text;
+    if (caret) caret.style.visibility = "visible";
+    if (onDone) onDone();
+  }
+
+  function step() {
+    if (finished) return;
+    if (i >= text.length) { finish(); return; }
+    target.textContent += text.charAt(i);
+    i++;
+    // slight rhythm: pause a touch longer after punctuation
+    const ch = text.charAt(i - 1);
+    const extra = (ch === "," || ch === ".") ? speed * 3 : 0;
+    timer = setTimeout(step, speed + extra);
+  }
+
+  step();
+  return { skip: finish, get done() { return finished; } };
+}
+
+/* ==========================================================================
+   4. SPRITE LOADING (with a generated pixel placeholder as last resort)
+   ========================================================================== */
+let serahSprite = null; // HTMLImageElement used by both DOM and canvas
+/* Crop box of the sprite's opaque pixels {sx, sy, sw, sh}.
+   The PNG has transparent padding (12px under her feet) which used to make
+   her float — we measure it so her feet are drawn exactly on the ground. */
+let spriteCrop = null;
+
+function placeholderImage() {
+  return new Promise((resolve) => {
+    const c = document.createElement("canvas");
+    c.width = 16; c.height = 16;
+    const x = c.getContext("2d");
+    x.fillStyle = "#ffd43b"; x.fillRect(5, 0, 6, 2);   // hair
+    x.fillStyle = "#f2c9a0"; x.fillRect(6, 2, 4, 3);   // face
+    x.fillStyle = "#111111"; x.fillRect(6, 3, 1, 1); x.fillRect(9, 3, 1, 1); // eyes
+    x.fillStyle = "#ffb3d1"; x.fillRect(4, 5, 8, 6);   // bodice
+    x.fillStyle = "#c79aec"; x.fillRect(3, 11, 10, 5); // skirt
+    const img = new Image();
+    img.onload = () => resolve(img);
+    img.onerror = () => resolve(null);
+    img.src = c.toDataURL();
+  });
+}
+
+/* Find the opaque bounding box of a sprite so we can crop away any
+   transparent padding (this is what made Serah hover above the ground). */
+function measureSprite(img) {
+  try {
+    const c = document.createElement("canvas");
+    c.width = img.naturalWidth;
+    c.height = img.naturalHeight;
+    const g = c.getContext("2d", { willReadFrequently: true });
+    g.drawImage(img, 0, 0);
+    const d = g.getImageData(0, 0, c.width, c.height).data;
+    let minX = c.width, maxX = -1, minY = c.height, maxY = -1;
+    for (let y = 0; y < c.height; y++) {
+      for (let x = 0; x < c.width; x++) {
+        if (d[(y * c.width + x) * 4 + 3] > 128) {   // solid pixels only — no faint fringe, feet land exactly
+          if (x < minX) minX = x;
+          if (x > maxX) maxX = x;
+          if (y < minY) minY = y;
+          if (y > maxY) maxY = y;
+        }
+      }
+    }
+    if (maxX < 0) return null;                       // fully transparent
+    return { sx: minX, sy: minY, sw: maxX - minX + 1, sh: maxY - minY + 1 };
+  } catch (e) {
+    return null;                                     // tainted canvas etc.
+  }
+}
+
+function loadSprite() {
+  return new Promise((resolve) => {
+    let i = 0;
+    const done = (img) => {
+      spriteCrop = (img && measureSprite(img)) || null;
+      resolve(img);
+    };
+    const tryNext = () => {
+      if (i >= CONFIG.SPRITE_SOURCES.length) {
+        console.warn("[Serah] Sprite not found — using generated placeholder. " +
+                     "Set CONFIG.SPRITE_SOURCES to your image file name.");
+        placeholderImage().then(done);
+        return;
+      }
+      const src = CONFIG.SPRITE_SOURCES[i++];
+      const img = new Image();
+      img.onload = () => done(img);
+      img.onerror = () => tryNext();
+      img.src = src;
+    };
+    tryNext();
+  });
+}
+
+/* ==========================================================================
+   5. PIXEL SPRITE MAPS FOR MONSTERS (drawn entirely in code)
+   '.' = transparent, other letters map to palette colours
+   ========================================================================== */
+const PALETTE_BLOB = {
+  G: "#4a2f8f",  // dark plum outline — pops against hills, path AND sky
+  g: "#efb8ef",  // lavender-pink body (was green — blended into the hills)
+  w: "#ffffff",  // eye white
+  k: "#2b1b3d",  // pupil
+  m: "#b14ab4"   // mouth
+};
+const BLOB_MAP = [
+  "...GGGGGG...",
+  "..GggggggG..",
+  "..GggggggG..",
+  ".GgwkwgwkwG.",
+  ".GgggmmgggG.",
+  ".GGggggggGG.",
+  "..GggggggG..",
+  "..GGggggGG..",
+  "..Gg....gG..",
+  "..gg....gg.."
+];
+
+const PALETTE_BAT = {
+  G: "#5b3fa8",  // outline
+  g: "#a78bfa",  // pastel lavender wings / body
+  w: "#ffffff",
+  k: "#2b1b3d",
+  m: "#ffd43b"
+};
+const BAT_MAP = [
+  "..............",
+  "..g........g..",
+  ".gg.GGGGGG.gg.",
+  "gggGGwwGGwwGgg",
+  "gggGGwkGGkwGgg",
+  ".ggGGGmmGGGgg.",
+  "..g.GGGGGG.g..",
+  "....GGGGGG....",
+  ".....G..G....."
+];
+
+function drawPixelMap(map, palette, x, y, cell) {
+  for (let r = 0; r < map.length; r++) {
+    const row = map[r];
+    for (let c = 0; c < row.length; c++) {
+      const ch = row.charAt(c);
+      if (ch === ".") continue;
+      ctx.fillStyle = palette[ch] || "#ffffff";
+      ctx.fillRect(Math.round(x + c * cell), Math.round(y + r * cell), cell, cell);
+    }
+  }
+}
+
+/* ==========================================================================
+   6. GAME ENGINE  (all coordinates are in a 300px-tall "design space",
+      the whole world is then scaled to the canvas -> stays crisp/responsive)
+   ========================================================================== */
+const canvas = $("#gameCanvas");
+const ctx = canvas.getContext("2d");
+
+const DH = 300;        // design height
+const GROUND = 266;    // y of the ground surface in design units
+let DW = 900;          // design width (set on resize)
+let S = 1;             // scale factor (canvas px per design px)
+
+/* --- player --- */
+const P = { x: 78, w: 52, h: 53, hOff: 0, vy: 0, onGround: true };
+
+/* --- game state --- */
+let state = "idle";            // idle | playing | over | won
+let score = 0;
+let hiScore = 0;
+let speed = CONFIG.START_SPEED;
+let obstacles = [];
+let particles = [];
+let stars = [];
+let gapLeft = 300;
+let runPhase = 0;
+let shake = 0;
+let coyote = 0;
+let jumpBuffer = 0;
+let worldDist = 0;        // total distance travelled (used for parallax)
+let timeAlive = 0;
+
+try { hiScore = parseInt(localStorage.getItem("serahHi") || "0", 10) || 0; } catch (e) {}
+
+/* How "night" the world is right now: 0 = sunny day, 1 = calm night.
+   Fades in over 150 points centred on CONFIG.NIGHT_AT (default 1000). */
+function nightFactor() {
+  return clamp((score - (CONFIG.NIGHT_AT - 75)) / 150, 0, 1);
+}
+
+/* --- resize / scale --- */
+function resize() {
+  const rect = canvas.getBoundingClientRect();
+  const dpr = Math.min(window.devicePixelRatio || 1, 2);
+  canvas.width = Math.max(1, Math.round(rect.width * dpr));
+  canvas.height = Math.max(1, Math.round(rect.height * dpr));
+  S = rect.height / DH;
+  DW = rect.width / S;
+  ctx.setTransform(dpr * S, 0, 0, dpr * S, 0, 0);
+  ctx.imageSmoothingEnabled = false;
+  makeStars();
+}
+window.addEventListener("resize", resize);
+
+/* deterministic-ish star field */
+function makeStars() {
+  stars = [];
+  const n = Math.floor(DW / 40);
+  for (let i = 0; i < n; i++) {
+    stars.push({ x: rand(0, DW), y: rand(6, GROUND - 70), s: Math.random() < 0.3 ? 3 : 2, p: rand(0, 6.3) });
+  }
+}
+
+/* --- obstacles --- */
+function pickType() {
+  const r = Math.random();
+  if (score < 100) return r < 0.55 ? "spike" : "blob";
+  if (score < 300) return r < 0.30 ? "spike" : (r < 0.60 ? "blob" : "block");
+  // campus zone: the library & university buildings show up from 300 on
+  if (score < 600) return r < 0.22 ? "spike" : (r < 0.42 ? "blob" :
+                        (r < 0.62 ? "block" : (r < 0.82 ? "library" : "university")));
+  return r < 0.18 ? "spike" : (r < 0.36 ? "blob" :
+         (r < 0.50 ? "block" : (r < 0.64 ? "bat" :
+         (r < 0.82 ? "library" : "university"))));
+}
+
+function spawnObstacle() {
+  const type = pickType();
+  const o = { type: type, x: DW + 40, w: 36, h: 30, base: 0, phase: rand(0, 6.3) };
+
+  if (type === "spike") {
+    const n = Math.random() < 0.4 ? 2 : 1;          // 1 or 2 thorns
+    o.w = n * 16; o.h = 30;
+  } else if (type === "blob") {
+    o.w = 36; o.h = 30;                             // 12x10 map, cell 3
+  } else if (type === "block") {
+    o.w = 34; o.h = 48;                             // tall pixel crate
+  } else if (type === "bat") {
+    o.w = 42; o.h = 27;                             // 14x9 map, cell 3
+    o.base = 66;                                    // start height above ground
+  } else if (type === "library") {
+    o.w = 54; o.h = 48;                             // cosy little library
+  } else if (type === "university") {
+    o.w = 66; o.h = 58;                             // grand pastel university
+  }
+
+  obstacles.push(o);
+
+  // distance until the next hazard — scales with speed so it stays fair
+  const df = 1 - 0.15 * (score / CONFIG.TARGET_SCORE);          // gets tighter near the end
+  let gap = (speed * rand(0.7, 1.25) + rand(80, 170)) * df;
+  if (type === "bat") gap += 120;
+  if (type === "library" || type === "university") gap += 70;   // wide buildings need breathing room
+  gapLeft = gap;
+}
+
+/* --- particles (running dust / celebration) --- */
+function spawnDust(n, x, y, colour) {
+  for (let i = 0; i < n; i++) {
+    particles.push({
+      x: x + rand(-6, 6), y: y + rand(-3, 1),
+      vx: rand(-90, -30) - speed * 0.15, vy: rand(-70, -10),
+      life: rand(0.25, 0.5), max: 0.5,
+      c: colour || "#e3c6f2", s: Math.random() < 0.5 ? 3 : 4
+    });
+  }
+}
+
+/* --- flow --- */
+function resetGame() {
+  score = 0;
+  speed = CONFIG.START_SPEED;
+  obstacles = [];
+  particles = [];
+  gapLeft = 380;
+  runPhase = 0;
+  shake = 0;
+  coyote = 0;
+  jumpBuffer = 0;
+  timeAlive = 0;
+  P.hOff = 0; P.vy = 0; P.onGround = true;
+  $("#overlayOver").classList.add("hidden");
+  $("#overlayWin").classList.add("hidden");
+  updateHud();
+}
+
+function startGame() {
+  resetGame();
+  state = "playing";
+  showScreen("screen-game");
+  resize();
+}
+
+function gameOver() {
+  state = "over";
+  shake = 0.35;
+  SFX.hit();
+  if (score > hiScore) {
+    hiScore = Math.floor(score);
+    try { localStorage.setItem("serahHi", String(hiScore)); } catch (e) {}
+  }
+  $("#overScore").textContent = Math.floor(score);
+  $("#bestScore").textContent = pad4(hiScore);
+  $("#overlayOver").classList.remove("hidden");
+}
+
+function winGame() {
+  score = CONFIG.TARGET_SCORE;
+  state = "won";
+  SFX.win();
+  updateHud();
+  for (let i = 0; i < 60; i++) {
+    particles.push({
+      x: rand(DW * 0.2, DW * 0.8), y: rand(0, GROUND),
+      vx: rand(-60, 60), vy: rand(-160, -40),
+      life: rand(0.8, 1.6), max: 1.6,
+      c: ["#ffd43b", "#ff9ec9", "#7ee2a0", "#9fd8ff"][i % 4],
+      s: Math.random() < 0.5 ? 4 : 5
+    });
+  }
+  $("#overlayWin").classList.remove("hidden");
+}
+
+function updateHud() {
+  $("#scoreValue").textContent = pad4(score);
+  $("#targetValue").textContent = String(CONFIG.TARGET_SCORE);
+  $("#progressFill").style.width = (100 * score / CONFIG.TARGET_SCORE).toFixed(1) + "%";
+
+  // day / night badge — only touches the DOM when the label actually changes
+  const isNight = nightFactor() >= 0.5;
+  const label = isNight ? "☾ CALM NIGHT" : "☀ SUNNY DAY";
+  const badge = $("#timeBadge");
+  if (badge.textContent !== label) badge.textContent = label;
+  badge.classList.toggle("night", isNight);
+}
+
+/* --- input --- */
+function pressAction() {
+  if (state === "playing") jumpBuffer = 0.14;
+}
+function releaseAction() {
+  /* The jump arc is fixed, so releasing changes nothing (a tap behaves like a hold).
+     If you ever want variable jump height, cut P.vy here when the button is released. */
+}
+
+function update(dt) {
+  timeAlive += dt;
+  speed = CONFIG.START_SPEED + score * CONFIG.SPEED_PER_POINT;
+  worldDist += speed * dt;
+  score += speed * dt * CONFIG.SCORE_PER_PX;
+  if (score >= CONFIG.TARGET_SCORE) { winGame(); return; }
+
+  /* --- player physics --- */
+  if (jumpBuffer > 0) {
+    if (P.onGround || coyote > 0) {
+      P.vy = CONFIG.JUMP_V;
+      P.onGround = false;
+      coyote = 0;
+      jumpBuffer = 0;
+      SFX.jump();
+      spawnDust(5, P.x + P.w / 2, GROUND, "#ffc9e2");
+    } else {
+      jumpBuffer -= dt;
+    }
+  }
+
+  P.vy -= CONFIG.GRAVITY * dt;
+  P.hOff += P.vy * dt;
+
+  if (P.hOff <= 0) {
+    if (!P.onGround) spawnDust(6, P.x + P.w / 2, GROUND, "#ffc9e2");
+    P.hOff = 0; P.vy = 0;
+    if (!P.onGround) { P.onGround = true; coyote = 0.09; }
+  } else {
+    P.onGround = false;
+    coyote = Math.max(0, coyote - dt);
+  }
+
+  /* running animation phase + ground dust */
+  if (P.onGround) {
+    runPhase += speed * dt / 16;
+    if (Math.random() < speed * dt / 90) spawnDust(1, P.x + 8, GROUND, "#f7bcd9");
+  }
+
+  /* --- spawn / move obstacles --- */
+  gapLeft -= speed * dt;
+  if (gapLeft <= 0) spawnObstacle();
+
+  for (let i = obstacles.length - 1; i >= 0; i--) {
+    const o = obstacles[i];
+    o.x -= speed * dt;
+    if (o.type === "bat") o.base = 66 + 48 * Math.sin(timeAlive * 2.2 + o.phase); // swoop!
+    if (o.x + o.w < -60) obstacles.splice(i, 1);
+  }
+
+  /* --- collision (forgiving hitboxes) --- */
+  const box = playerBox();
+  for (const o of obstacles) {
+    const b = obstacleBox(o);
+    if (box.x < b.x + b.w && box.x + box.w > b.x && box.y < b.y + b.h && box.y + box.h > b.y) {
+      gameOver();
+      return;
+    }
+  }
+
+  /* --- particles --- */
+  for (let i = particles.length - 1; i >= 0; i--) {
+    const p = particles[i];
+    p.life -= dt;
+    if (p.life <= 0) { particles.splice(i, 1); continue; }
+    p.x += p.vx * dt; p.y += p.vy * dt; p.vy += 900 * dt;
+  }
+
+  updateHud();
+}
+
+function playerBox() {
+  const top = GROUND - P.hOff - P.h;
+  return { x: P.x + 11, y: top + 8, w: P.w - 22, h: P.h - 15 };
+}
+function obstacleBox(o) {
+  const y = GROUND - o.base - o.h;
+  if (o.type === "spike") return { x: o.x + 5, y: y + 8, w: o.w - 10, h: o.h - 8 };
+  if (o.type === "bat")   return { x: o.x + 5, y: y + 4, w: o.w - 10, h: o.h - 8 };
+  return { x: o.x + 4, y: y + 4, w: o.w - 8, h: o.h - 4 };
+}
+
+/* ==========================================================================
+   7. RENDERING
+   ========================================================================== */
+function pixelEllipse(cx, cy, rx, ry, colour) {
+  ctx.fillStyle = colour;
+  for (let y = -ry; y <= ry; y += 3) {
+    const half = rx * Math.sqrt(Math.max(0, 1 - (y * y) / (ry * ry)));
+    ctx.fillRect(cx - half, cy + y, half * 2, 3);
+  }
+}
+
+function drawBackground() {
+  const n = nightFactor();          // 0 = sunny day, 1 = calm night
+
+  // --- sky bands (cross-fade day -> night) ---
+  const skyTop = mixHex("#9adcff", "#241f4e", n);
+  const skyMid = mixHex("#c3ebff", "#312a63", n);
+  const skyLow = mixHex("#e6f7ff", "#443a7a", n);
+  ctx.fillStyle = skyTop; ctx.fillRect(0, 0, DW, 110);
+  ctx.fillStyle = skyMid; ctx.fillRect(0, 110, DW, 90);
+  ctx.fillStyle = skyLow; ctx.fillRect(0, 200, DW, DH - 200);
+
+  // --- sun (sunny day) ---
+  if (n < 1) {
+    ctx.globalAlpha = 1 - n;
+    const sx = DW - 95, sy = 54;
+    ctx.fillStyle = "#ffd97a";                     // slow spinning rays
+    for (let i = 0; i < 8; i++) {
+      const a = i * Math.PI / 4 + timeAlive * 0.12;
+      ctx.fillRect(Math.round(sx + Math.cos(a) * 32) - 2,
+                   Math.round(sy + Math.sin(a) * 32) - 2, 5, 5);
+    }
+    pixelEllipse(sx, sy, 24, 24, "#ffd97a");
+    pixelEllipse(sx, sy, 17, 17, "#ffe9a8");
+    ctx.globalAlpha = 1;
+  }
+
+  // --- drifting pixel clouds (day) ---
+  if (n < 1) drawClouds(1 - n);
+
+  // --- calm night: moon + twinkling stars ---
+  if (n > 0) {
+    ctx.globalAlpha = n;
+    pixelEllipse(DW - 88, 54, 24, 24, "#ffe9a8"); // full moon
+    ctx.fillStyle = "#f2d488";                     // craters
+    ctx.fillRect(DW - 98, 46, 6, 6);
+    ctx.fillRect(DW - 82, 62, 5, 5);
+    ctx.fillRect(DW - 86, 42, 4, 4);
+    ctx.globalAlpha = 1;
+
+    ctx.fillStyle = "#fff7d6";
+    const span = DW + 60;
+    for (const st of stars) {
+      const tw = (Math.sin(timeAlive * 3 + st.p) + 1) / 2;
+      ctx.globalAlpha = n * (0.35 + tw * 0.65);
+      const x = (((st.x - worldDist * 0.1) % span) + span) % span;
+      ctx.fillRect(x, st.y, st.s, st.s);
+    }
+    ctx.globalAlpha = 1;
+  }
+
+  // --- distant hills (parallax 0.35) ---
+  const hillFar = mixHex("#b9e8c6", "#4a4386", n);
+  const off1 = (worldDist * 0.35) % 300;
+  for (let i = -1; i < DW / 150 + 2; i++) {
+    const cx = i * 150 - off1 + 75;
+    pixelEllipse(cx, GROUND + 20, 95, 62, hillFar);
+  }
+
+  // --- near hills (parallax 0.6) ---
+  const hillNear = mixHex("#93dcbb", "#5b52a0", n);
+  const off2 = (worldDist * 0.6) % 220;
+  for (let i = -1; i < DW / 110 + 2; i++) {
+    const cx = i * 110 - off2 + 55;
+    pixelEllipse(cx, GROUND + 26, 70, 46, hillNear);
+  }
+
+  // --- cherry-blossom / green trees beside the path (parallax 0.6) ---
+  // colour follows the world slot (i + slot) so trees never pop at the wrap
+  const offT = (worldDist * 0.6) % 240;
+  const slotT = Math.floor(worldDist * 0.6 / 240);
+  for (let i = -1; i < DW / 240 + 2; i++) {
+    drawBlossomTree(i * 240 - offT + 130, n, ((i + slotT) & 1) === 0);
+  }
+
+  // --- chamomile flowers along the horizon (parallax 0.45) ---
+  const offF = (worldDist * 0.45) % 96;
+  const slotF = Math.floor(worldDist * 0.45 / 96);
+  for (let i = -1; i < DW / 96 + 2; i++) {
+    const fx = i * 96 - offF + 58;
+    if (((i + slotF) & 1) === 0) drawChamomile(fx, GROUND - 1, n);
+  }
+}
+
+/* soft pixel clouds drifting across the sunny sky */
+function drawClouds(alpha) {
+  ctx.globalAlpha = alpha * 0.95;
+  const span = DW + 260;
+  for (let i = 0; i < 5; i++) {
+    const f = 0.10 + i * 0.025;                    // slow parallax
+    const x = (((i * 230 - worldDist * f) % span) + span) % span - 70;
+    const y = 22 + (i % 3) * 30;
+    pixelEllipse(x, y, 26, 11, "#ffffff");
+    pixelEllipse(x + 17, y - 8, 16, 10, "#ffffff");
+    pixelEllipse(x - 15, y + 1, 14, 9, "#ffffff");
+    pixelEllipse(x + 2, y + 7, 24, 6, "#e9f7ff");  // soft underside
+  }
+  ctx.globalAlpha = 1;
+}
+
+/* little cherry tree standing beside the path */
+function drawBlossomTree(tx, n, green = false) {
+  tx = Math.round(tx);
+  ctx.fillStyle = mixHex("#8a5a3b", "#4a3a5c", n);  // trunk
+  ctx.fillRect(tx - 3, GROUND - 24, 6, 24);
+  const leaf = green ? mixHex("#7ad88f", "#4f9a72", n)   // green summer tree
+                     : mixHex("#ffb3d1", "#8d78c9", n);  // pink blossom tree
+  pixelEllipse(tx, GROUND - 34, 15, 12, leaf);
+  pixelEllipse(tx - 11, GROUND - 28, 9, 8, leaf);
+  pixelEllipse(tx + 11, GROUND - 28, 9, 8, leaf);
+  ctx.fillStyle = green ? mixHex("#b9f0c6", "#7fbfa0", n)
+                        : mixHex("#ffd3e6", "#a99ae0", n);
+  ctx.fillRect(tx - 6, GROUND - 40, 7, 4);
+  ctx.fillRect(tx + 4, GROUND - 33, 5, 4);
+}
+
+/* tiny chamomile flowers dotted along the horizon */
+function drawChamomile(x, y, n) {
+  x = Math.round(x);
+  const cy = y - 10;
+  const petal = mixHex("#ffffff", "#d8d4ee", n);
+  const core  = mixHex("#ffd43b", "#e0a84a", n);
+  const stem  = mixHex("#3fae5f", "#3d6f58", n);
+  ctx.fillStyle = stem;
+  ctx.fillRect(x, cy + 3, 2, y - cy - 3);        // stem down to the ground
+  ctx.fillStyle = petal;
+  ctx.fillRect(x - 5, cy - 2, 4, 4);             // left petal
+  ctx.fillRect(x + 3, cy - 2, 4, 4);             // right petal
+  ctx.fillRect(x - 2, cy - 5, 5, 4);             // top petal
+  ctx.fillRect(x - 2, cy + 2, 5, 4);             // bottom petal
+  ctx.fillStyle = core;
+  ctx.fillRect(x - 1, cy - 1, 4, 4);             // yellow heart
+}
+
+function drawGround() {
+  const n = nightFactor();
+
+  // soft earth / walking path
+  ctx.fillStyle = mixHex("#ecd9c2", "#342e5f", n);
+  ctx.fillRect(0, GROUND, DW, DH - GROUND);
+
+  // cute pink top edge
+  ctx.fillStyle = mixHex("#ff9ec9", "#a99ae0", n);
+  ctx.fillRect(0, GROUND - 4, DW, 4);
+
+  // scrolling grass tufts
+  ctx.fillStyle = mixHex("#79d8a2", "#6f63b8", n);
+  const dashOffset = worldDist % 60;
+  for (let x = -dashOffset; x < DW; x += 60) {
+    ctx.fillRect(x, GROUND + 12, 26, 4);
+    ctx.fillRect(x + 34, GROUND + 26, 12, 4);
+  }
+
+  // little flowers dotted along the path (slower loop)
+  const fo = worldDist % 140;
+  for (let x = -fo; x < DW; x += 140) {
+    drawFlower(x + 18, GROUND + 7, n);
+    drawFlower(x + 88, GROUND + 20, n);
+  }
+}
+
+/* tiny 4-petal pixel flower growing beside the path */
+function drawFlower(x, y, n) {
+  ctx.fillStyle = mixHex("#5bbf82", "#5f7eb8", n);      // stem
+  ctx.fillRect(x + 1, y + 6, 2, 6);
+  ctx.fillStyle = mixHex("#ff87b7", "#a99ae0", n);      // petals
+  ctx.fillRect(x - 3, y, 3, 3);
+  ctx.fillRect(x + 3, y, 3, 3);
+  ctx.fillRect(x, y - 3, 3, 3);
+  ctx.fillRect(x, y + 3, 3, 3);
+  ctx.fillStyle = mixHex("#ffd43b", "#ffe9a8", n);      // centre
+  ctx.fillRect(x, y, 3, 3);
+}
+
+function drawObstacle(o) {
+  const y = GROUND - o.base - o.h;
+
+  if (o.type === "blob") {
+    const bob = Math.sin(timeAlive * 9 + o.phase) > 0 ? 0 : 2; // 2-frame wobble
+    drawPixelMap(BLOB_MAP, PALETTE_BLOB, o.x, y + bob, 3);
+  } else if (o.type === "bat") {
+    drawPixelMap(BAT_MAP, PALETTE_BAT, o.x, y, 3);
+  } else if (o.type === "university") {
+    drawUniversity(o.x, y, o.w, o.h);
+  } else if (o.type === "library") {
+    drawLibrary(o.x, y, o.w, o.h);
+  } else if (o.type === "block") {
+    // classic crate from the first version (added back)
+    ctx.fillStyle = "#0a0a16"; ctx.fillRect(o.x - 2, y - 2, o.w + 4, o.h + 4);
+    ctx.fillStyle = "#3b3b5c"; ctx.fillRect(o.x, y, o.w, o.h);
+    ctx.fillStyle = "#6c6c99"; ctx.fillRect(o.x, y, o.w, 5);
+    ctx.fillStyle = "#242444";
+    for (let r = 1; r < 3; r++) ctx.fillRect(o.x, y + r * (o.h / 3), o.w, 4);
+    ctx.fillRect(o.x + o.w / 2 - 2, y, 4, o.h);
+    ctx.fillStyle = "#ffd43b";
+    ctx.fillRect(o.x + 5, y + 8, 6, 6);
+    ctx.fillRect(o.x + o.w - 11, y + o.h - 14, 6, 6);
+  } else {
+    // 1-2 thorn hedges — dark outline first so they never blend into the hills
+    const n = Math.max(1, Math.round(o.w / 16));
+    const spikeRow = (sx, extra, colour, rowH) => {
+      for (let r = 0; r < 10; r++) {
+        const t = r / 10;                        // 0 = tip, 1 = base
+        const inset = Math.round((14 * (1 - t)) / 2 / 3) * 3;
+        const w = Math.max(3, 14 - inset * 2 + extra * 2);
+        ctx.fillStyle = colour;
+        ctx.fillRect(Math.round(sx + 1 + inset - extra),
+                     GROUND - 30 - extra + r * 3, w, rowH);
+      }
+    };
+    for (let i = 0; i < n; i++) {
+      const sx = o.x + i * 16;
+      spikeRow(sx, 3, "#3b2a63", 4);             // plum silhouette (outline)
+      for (let r = 0; r < 10; r++) {             // green fill on top
+        const t = r / 10;
+        const inset = Math.round((14 * (1 - t)) / 2 / 3) * 3;
+        ctx.fillStyle = r < 4 ? "#2f9e44" : "#51cf66";
+        ctx.fillRect(sx + 1 + inset, GROUND - 30 + r * 3, 14 - inset * 2, 3);
+      }
+      ctx.fillStyle = "#ffffff";
+      ctx.fillRect(sx + 6, GROUND - 30, 3, 6);   // sparkle tip
+      ctx.fillStyle = "#ff6fae";
+      ctx.fillRect(sx + 3, GROUND - 12, 3, 3);   // berry
+    }
+  }
+}
+
+/* --- campus buildings: Serah has to jump over these! --- */
+function drawUniversity(x, y, w, h) {
+  x = Math.round(x); y = Math.round(y);
+  const mid = x + Math.round(w / 2);
+
+  // little gold flag on the roof (decorative only)
+  ctx.fillStyle = "#4a2f8f";
+  ctx.fillRect(mid - 1, y - 13, 2, 13);
+  ctx.fillStyle = "#ffd43b";
+  ctx.fillRect(mid + 1, y - 13, 9, 6);
+
+  // --- stepped pitched roof: plum silhouette, then pink fill ---
+  const outerW = w + 12, outerX = x - 6;
+  for (let r = 0; r < 8; r++) {                    // outline pass
+    const rw = Math.max(8, Math.round(outerW * (r + 1) / 8));
+    const rx = Math.round(outerX + (outerW - rw) / 2);
+    ctx.fillStyle = "#4a2f8f";
+    ctx.fillRect(rx, y - 3 + r * 2, rw, 3);
+  }
+  for (let r = 0; r < 8; r++) {                    // fill pass (inset 3px)
+    const rw = Math.max(8, Math.round(outerW * (r + 1) / 8)) - 6;
+    const rx = Math.round(outerX + (outerW - (rw + 6)) / 2) + 3;
+    ctx.fillStyle = r < 4 ? "#ff9ec9" : "#ff6fae";
+    ctx.fillRect(rx, y + r * 2, rw, 2);
+  }
+
+  // --- walls (plum outline behind) ---
+  ctx.fillStyle = "#4a2f8f";
+  ctx.fillRect(x - 3, y + 14, w + 6, h - 14 + 3);
+  ctx.fillStyle = "#ffd9e8";
+  ctx.fillRect(x, y + 16, w, h - 16);
+
+  // clock sitting on the eaves
+  ctx.fillStyle = "#4a2f8f"; ctx.fillRect(mid - 7, y + 3, 14, 14);
+  ctx.fillStyle = "#fffdfd"; ctx.fillRect(mid - 6, y + 4, 12, 12);
+  ctx.fillStyle = "#4a2f8f";
+  ctx.fillRect(mid - 1, y + 6, 2, 6);
+  ctx.fillRect(mid - 1, y + 10, 5, 2);
+
+  // two big windows
+  [x + 6, x + w - 20].forEach((wx) => {
+    ctx.fillStyle = "#4a2f8f"; ctx.fillRect(wx - 2, y + 18, 18, 18);
+    ctx.fillStyle = "#9fd8ff"; ctx.fillRect(wx, y + 20, 14, 14);
+    ctx.fillStyle = "#4a2f8f";
+    ctx.fillRect(wx + 6, y + 20, 2, 14);
+    ctx.fillRect(wx, y + 26, 14, 2);
+  });
+
+  // grand entrance: columns + arched door
+  ctx.fillStyle = "#ffffff";
+  ctx.fillRect(mid - 15, y + 32, 5, h - 32);
+  ctx.fillRect(mid + 10, y + 32, 5, h - 32);
+  ctx.fillStyle = "#4a2f8f"; ctx.fillRect(mid - 11, y + 32, 22, h - 32);
+  ctx.fillStyle = "#b14ab4"; ctx.fillRect(mid - 8, y + 35, 16, h - 35);
+  ctx.fillStyle = "#ffd43b";
+  ctx.fillRect(mid + 3, y + h - 13, 3, 4);         // doorknob
+}
+
+function drawLibrary(x, y, w, h) {
+  x = Math.round(x); y = Math.round(y);
+
+  // chimney
+  ctx.fillStyle = "#4a2f8f"; ctx.fillRect(x + 5, y - 13, 9, 14);
+  ctx.fillStyle = "#c9b6ff"; ctx.fillRect(x + 6, y - 12, 7, 13);
+
+  // stepped pitched roof (lavender): plum silhouette, then fill
+  const outerW = w + 12, outerX = x - 6;
+  for (let r = 0; r < 8; r++) {
+    const rw = Math.max(8, Math.round(outerW * (r + 1) / 8));
+    const rx = Math.round(outerX + (outerW - rw) / 2);
+    ctx.fillStyle = "#4a2f8f";
+    ctx.fillRect(rx, y - 2 + r * 2, rw, 3);
+  }
+  for (let r = 0; r < 8; r++) {
+    const rw = Math.max(8, Math.round(outerW * (r + 1) / 8)) - 6;
+    const rx = Math.round(outerX + (outerW - (rw + 6)) / 2) + 3;
+    ctx.fillStyle = r < 4 ? "#c9b6ff" : "#a78bfa";
+    ctx.fillRect(rx, y + r * 2, rw, 2);
+  }
+
+  // walls (plum outline behind)
+  ctx.fillStyle = "#4a2f8f";
+  ctx.fillRect(x - 3, y + 14, w + 6, h - 14 + 3);
+  ctx.fillStyle = "#efe6ff";
+  ctx.fillRect(x, y + 16, w, h - 16);
+
+  // big bookshelf window — real little books inside!
+  ctx.fillStyle = "#4a2f8f"; ctx.fillRect(x + 4, y + 19, 22, 20);
+  ctx.fillStyle = "#8b4fd0"; ctx.fillRect(x + 6, y + 21, 18, 16);
+  const books = ["#ff6fae", "#ffd43b", "#6fe6a4", "#8fd3ff"];
+  for (let i = 0; i < 4; i++) {
+    ctx.fillStyle = books[i];
+    ctx.fillRect(x + 8 + i * 4, y + 22, 3, 12);
+  }
+  ctx.fillStyle = "#6d48ad";
+  ctx.fillRect(x + 6, y + 29, 18, 2);          // shelf planks
+  ctx.fillRect(x + 6, y + 35, 18, 2);
+
+  // sign with a heart, over the door
+  ctx.fillStyle = "#4a2f8f";   ctx.fillRect(x + w - 22, y + 19, 18, 12);
+  ctx.fillStyle = "#fffdfd";   ctx.fillRect(x + w - 21, y + 20, 16, 10);
+  ctx.fillStyle = "#e8458a";
+  const hx = x + w - 16, hy = y + 22;          // tiny pixel heart
+  ctx.fillRect(hx, hy, 2, 2);
+  ctx.fillRect(hx + 3, hy, 2, 2);
+  ctx.fillRect(hx + 1, hy + 2, 3, 2);
+  ctx.fillRect(hx + 2, hy + 4, 1, 1);
+
+  // arched door + step
+  ctx.fillStyle = "#4a2f8f";
+  ctx.fillRect(x + w - 17, y + 28, 13, h - 28);
+  ctx.fillRect(x + w - 14, y + 25, 7, 3);
+  ctx.fillStyle = "#c9b6ff";
+  ctx.fillRect(x + w - 15, y + 30, 9, h - 30);
+  ctx.fillStyle = "#ffd43b";
+  ctx.fillRect(x + w - 9, y + 37, 3, 4);       // doorknob
+  ctx.fillStyle = "#a78bfa";
+  ctx.fillRect(x + w - 19, y + h - 3, 17, 3);  // step
+}
+
+function drawPlayer() {
+  const bob = P.onGround ? (Math.floor(runPhase) % 2) * 2 : 0; // 2-frame run bob
+  const feetY = GROUND - P.hOff + bob;   // feet line — follows jump offset + run bob
+
+  // shadow, right under her feet
+  const sh = clamp(1 - P.hOff / 170, 0.3, 1);
+  ctx.globalAlpha = 0.35 * sh;
+  pixelEllipse(P.x + P.w / 2, GROUND + 6, 20 * sh, 5 * sh, "#4a3358");
+  ctx.globalAlpha = 1;
+
+  if (serahSprite) {
+    // crop away the PNG's transparent padding so she STANDS on the ground
+    const m = spriteCrop || { sx: 0, sy: 0,
+                              sw: serahSprite.naturalWidth || P.w,
+                              sh: serahSprite.naturalHeight || P.h };
+    const H = 42;                                   // visual height (design px)
+    const W = Math.max(8, Math.round(H * m.sw / m.sh));
+    const dx = Math.round(P.x + P.w / 2 - W / 2);
+    const dy = Math.round(feetY - H);               // opaque bottom = ground
+    if (CONFIG.FLIP_SPRITE) {
+      ctx.save();
+      ctx.translate(dx + W, dy);
+      ctx.scale(-1, 1);
+      ctx.drawImage(serahSprite, m.sx, m.sy, m.sw, m.sh, 0, 0, W, H);
+      ctx.restore();
+    } else {
+      ctx.drawImage(serahSprite, m.sx, m.sy, m.sw, m.sh, dx, dy, W, H);
+    }
+  } else {
+    // ultra-safe fallback figure, feet on the ground
+    ctx.fillStyle = "#ffb3d1"; ctx.fillRect(P.x + 14, feetY - 28, 24, 28);
+    ctx.fillStyle = "#f2c9a0"; ctx.fillRect(P.x + 18, feetY - 42, 16, 14);
+    ctx.fillStyle = "#ffd43b"; ctx.fillRect(P.x + 16, feetY - 46, 20, 6);
+  }
+}
+
+function drawParticles() {
+  for (const p of particles) {
+    ctx.globalAlpha = clamp(p.life / p.max, 0, 1);
+    ctx.fillStyle = p.c;
+    ctx.fillRect(Math.round(p.x), Math.round(p.y), p.s, p.s);
+  }
+  ctx.globalAlpha = 1;
+}
+
+function render() {
+  ctx.save();
+  if (shake > 0) ctx.translate(rand(-4, 4), rand(-4, 4));
+
+  drawBackground();
+  drawGround();
+  for (const o of obstacles) drawObstacle(o);
+  drawPlayer();
+  drawParticles();
+
+  // soft night veil — tints the whole world together after 1000
+  const n = nightFactor();
+  if (n > 0) {
+    ctx.fillStyle = "rgba(52,42,110," + (0.18 * n).toFixed(3) + ")";
+    ctx.fillRect(-8, -8, DW + 16, DH + 16);
+  }
+
+  ctx.restore();
+}
+
+/* ==========================================================================
+   8. MAIN LOOP
+   ========================================================================== */
+let last = performance.now();
+function loop(now) {
+  const dt = Math.min(0.05, (now - last) / 1000);
+  last = now;
+  if (shake > 0) shake -= dt;
+
+  if (currentScreen === "screen-game") {
+    if (state === "playing") update(dt);
+    else timeAlive += dt;           // keep the world alive behind the overlays
+    render();
+  }
+  requestAnimationFrame(loop);
+}
+
+/* ==========================================================================
+   9. TRIVIA — playful questions about the fictional Serah
+      Add / remove entries freely: { q, a:[...], correct: <index>, note }
+   ========================================================================== */
+const TRIVIA = [
+  {
+    q: "Serah's official job title on her business card is:",
+    a: ["Chief Nap Officer", "Queen of Doing Everything", "Professional Snack Tester", "Full-time Nap Champion"],
+    correct: 1,
+    note: "Correct — she's not overqualified, she's just correctly labeled."
+  },
+  {
+    q: "It is 2 AM. Serah opens the fridge. What does she find?",
+    a: ["One lonely olive", "A leftover slice and pure confidence", "Rockola", "The meaning of life (pasta and ojolad)"],
+    correct: 2,
+    note: "Correct — Rockola: a healthy vegetable Serah would rather die than taste."
+  },
+  {
+    q: "What is Serah's spirit animal?",
+    a: ["A cat that knocks your stuff off tables", "A sloth on vacation", "A pigeon with a suspicious plan"],
+    correct: 0,
+    note: "Correct — chaotic, cute, and always slightly judging you."
+  },
+  {
+    q: "What is Serah's signature drink after a long day of doing everything?",
+    a: ["Vanilla cola, always", "Plain water like a responsible adult", "A smoothie with seventeen ingredients", "Whatever is within arm's reach"],
+    correct: 0,
+    note: "Correct — vanilla cola: the fuel of champions."
+  },
+  {
+    q: "Who is Serah?",
+    a: ["Jeffrey Dahmer", "A mummy maker", "The best person everyone knows"],
+    correct: 2,
+    note: "Correct — of course, I wouldn't dare say anything else."
+  },
+  {
+    q: "What is Serah's rate?",
+    a: ["A humble 7", "Exactly 10, no notes", "11, obviously", "Infinite, obviously"],
+    correct: 3,
+    note: "Correct — the scale simply was not ready."
+  },
+  {
+    q: "Which superpower would Serah actually pick?",
+    a: ["Turning homework into snacks", "Turning exams to chips and coffee", "Flying, but backwards"],
+    correct: 1,
+    note: "Correct — finally, a superpower that helps humanity."
+  },
+  {
+    q: "What happens when Serah plays Mobile Legends?",
+    a: ["She carries the whole team", "The game asks HER for advice", "The turret apologises in chat", "She goes AFK to snack"],
+    correct: 1,
+    note: "Correct — even the game knows who the real pro is."
+  },
+  {
+    q: "Who's the smartest person in the whole world?",
+    a: ["Poco (the dumbest, obv)", "Albert Einstein", "Jude Bellingham", "Serah", "Newton"],
+    correct: 3,
+    note: "Correct — obviously. Even Einstein would take notes from her."
+  },
+  {
+    q: "Will Poco be murdered in the next 5 minutes?",
+    a: ["Yes", "Ja", "Oui", "Да", "はい", "Evet", "Sí"],
+    allCorrect: true,
+    note: "Correct — every language agrees."
+  },
+  {
+    q: "What's Serah's favorite flower?",
+    a: ["Rose", "Chamomile", "Sunflower", "Tulip"],
+    correct: 1,
+    note: "Can't you see it all over the place and on her head?",
+    wrongNote: "Can't you see the flower on her head? Are you blind?"
+  },
+  {
+    q: "Who is the best roamer of all time in MLBB — the one who saves everyone and carries the team?",
+    a: ["OhMyV33NUS", "Yawi", "Serah", "KarlTzy"],
+    correct: 2,
+    note: "Correct — legends play Roam, but nobody roams like Serah."
+  },
+  {
+    q: "What does Serah eat for breakfast?",
+    a: ["Nothing — breakfast is a myth", "A full English", "Pancakes the size of her head", "Cereal like a responsible person"],
+    correct: 0,
+    note: "Correct — she doesn't eat anything in the mornings. Coffee counts as a meal and she stands by it."
+  },
+  {
+    q: "Which fancy drink has Serah in a complete chokehold?",
+    a: ["Black tea", "Matcha", "Celery juice", "Mint water"],
+    correct: 1,
+    note: "She is trying to poison everyone with it and turn everyone to gay."
+  },
+  {
+    q: "Which tea does Serah swear by when she wants to wind down?",
+    a: ["Jasmine tea", "Black tea", "Peppermint tea", "Lemon tea"],
+    correct: 0,
+    note: "Correct — she simply has the best taste, as usual."
+  }
+];
+
+let qIndex = 0;
+let qScore = 0;
+
+function renderQuestion() {
+  const q = TRIVIA[qIndex];
+  $("#qCounter").textContent = "QUESTION " + (qIndex + 1) + " / " + TRIVIA.length;
+  $("#qScore").textContent = "SCORE " + qScore;
+  $("#qText").textContent = q.q;
+
+  const box = $("#answersBox");
+  box.innerHTML = "";
+  q.a.forEach((text, i) => {
+    const b = document.createElement("button");
+    b.className = "btn btn-answer";
+    b.textContent = String.fromCharCode(65 + i) + " · " + text;
+    b.addEventListener("click", () => answer(i));
+    box.appendChild(b);
+  });
+
+  $("#feedback").className = "feedback hidden";
+  $("#feedback").textContent = "";
+  $("#nextBtn").classList.add("hidden");
+}
+
+function answer(i) {
+  const q = TRIVIA[qIndex];
+  const right = q.allCorrect || i === q.correct;
+  const btns = Array.from($("#answersBox").children);
+  btns.forEach((b, j) => {
+    b.disabled = true;
+    if (q.allCorrect || j === q.correct) b.classList.add("correct");
+    else if (j === i) b.classList.add("wrong");
+    else b.classList.add("dim");
+  });
+
+  const fb = $("#feedback");
+  if (right) {
+    qScore++;
+    fb.textContent = "✔ " + q.note;
+    fb.className = "feedback good";
+    SFX.correct();
+  } else {
+    fb.textContent = q.wrongNote ? "✘ " + q.wrongNote
+      : "✘ Nope — the answer was: " + q.a[q.correct] + ". " + q.note;
+    fb.className = "feedback bad";
+    SFX.wrong();
+  }
+  $("#qScore").textContent = "SCORE " + qScore;
+
+  $("#nextBtn").textContent = (qIndex === TRIVIA.length - 1) ? "SEE RESULT ▶" : "NEXT ▶";
+  $("#nextBtn").classList.remove("hidden");
+}
+
+function showResult() {
+  $("#quizBox").classList.add("hidden");
+  $("#resultBox").classList.remove("hidden");
+  $("#finalScore").textContent = qScore + "/" + TRIVIA.length;
+
+  const ratio = qScore / TRIVIA.length;
+  let msg;
+  if (ratio === 1) msg = "Sometimes your genius is almost frightening.";
+  else if (ratio >= 0.6) msg = "Not bad at all — your genius is showing.";
+  else msg = "Not bad — try again, but louder.";
+  $("#resultMsg").textContent = msg;
+}
+
+function startTrivia() {
+  qIndex = 0;
+  qScore = 0;
+  showScreen("screen-trivia");
+  $("#quizBox").classList.remove("hidden");
+  $("#resultBox").classList.add("hidden");
+  renderQuestion();
+}
+
+/* ==========================================================================
+   10. FLOW / WIRING
+   ========================================================================== */
+let introTW = null, victoryTW = null, finalTW = null;
+
+/* --- intro --- */
+function runIntro() {
+  showScreen("screen-intro");
+  $("#startBtn").classList.add("hidden");
+  $("#introHint").classList.remove("hidden");
+  $("#introHint").textContent = "loading sprite...";
+
+  introTW = typewriter($("#introTyped"), "This is Serah,", {
+    speed: 70,
+    onDone: introReady
+  });
+}
+function introReady() {
+  $("#introHint").textContent = "click / tap / press SPACE to start";
+  $("#startBtn").classList.remove("hidden");
+}
+
+/* --- victory text --- */
+function runVictoryText() {
+  showScreen("screen-victory");
+  $("#victoryContinueBtn").classList.add("hidden");
+  $("#victoryHint").classList.remove("hidden");
+
+  victoryTW = typewriter($("#victoryTyped"), "As you can see, she can do everything.", {
+    speed: 55,
+    onDone: () => {
+      $("#victoryHint").classList.add("hidden");
+      $("#victoryContinueBtn").classList.remove("hidden");
+    }
+  });
+}
+
+/* --- final screen --- */
+function runFinalText() {
+  showScreen("screen-final");
+  $("#finalAction").classList.add("hidden");
+  $("#finalFinale").classList.add("hidden");
+  $("#finalHint").classList.remove("hidden");
+
+  finalTW = typewriter($("#finalTyped"), "You won as always.", {
+    speed: 80,
+    onDone: () => {
+      $("#finalHint").classList.add("hidden");
+      $("#finalAction").classList.remove("hidden");
+    }
+  });
+}
+
+/* --- pixel confetti for the finale --- */
+function confetti() {
+  const wrap = document.createElement("div");
+  wrap.className = "confetti";
+  const colours = ["#ffd43b", "#efb8ef", "#6fe6a4", "#9fd8ff", "#ff9ec9"];
+  for (let i = 0; i < 40; i++) {
+    const bit = document.createElement("i");
+    bit.style.left = rand(0, 100) + "%";
+    bit.style.background = colours[i % colours.length];
+    bit.style.animationDuration = rand(2.2, 4.2) + "s";
+    bit.style.animationDelay = rand(0, 1.2) + "s";
+    bit.style.width = bit.style.height = (Math.random() < 0.5 ? 8 : 12) + "px";
+    wrap.appendChild(bit);
+  }
+  document.body.appendChild(wrap);
+  setTimeout(() => wrap.remove(), 6500);
+}
+
+/* --- keyboard / pointer --- */
+function screenAction() {
+  if (currentScreen === "screen-intro") {
+    if (introTW && !introTW.done) introTW.skip();
+    else startGame();
+  } else if (currentScreen === "screen-game") {
+    if (state === "playing") pressAction();
+    else if (state === "over") startGame();
+    else if (state === "won") runVictoryText();
+  } else if (currentScreen === "screen-victory") {
+    if (victoryTW && !victoryTW.done) victoryTW.skip();
+    else startTrivia();
+  } else if (currentScreen === "screen-final") {
+    if (finalTW && !finalTW.done) finalTW.skip();
+  }
+}
+
+window.addEventListener("keydown", (e) => {
+  if (e.repeat) return;
+  // if a visible button has keyboard focus, let SPACE/ENTER activate it instead
+  const ae = document.activeElement;
+  if (ae && ae.tagName === "BUTTON" && ae.offsetParent !== null) return;
+  const isJumpKey = e.code === "Space" || e.key === " " || e.key === "Spacebar" ||
+                    e.code === "ArrowUp"  || e.key === "ArrowUp" ||
+                    e.code === "Enter"    || e.key === "Enter";
+  if (isJumpKey) {
+    e.preventDefault();
+    screenAction();
+  }
+});
+window.addEventListener("keyup", (e) => {
+  if (e.code === "Space" || e.key === " " || e.code === "ArrowUp" || e.key === "ArrowUp") releaseAction();
+});
+
+/* taps/jumps on the game area (mouse + touch via Pointer Events) */
+$("#gameWrap").addEventListener("pointerdown", (e) => {
+  if (e.target.closest("button")) return;   // let overlay buttons work normally
+  e.preventDefault();
+  screenAction();
+});
+$("#gameWrap").addEventListener("pointerup", releaseAction);
+$("#gameWrap").addEventListener("pointercancel", releaseAction);
+
+/* clicking anywhere on intro / victory / final panels also advances */
+["#screen-intro", "#screen-victory", "#screen-final"].forEach((sel) => {
+  $(sel).addEventListener("pointerdown", (e) => {
+    if (e.target.closest("button")) return;
+    screenAction();
+  });
+});
+
+/* --- buttons --- */
+$("#startBtn").addEventListener("click", startGame);
+$("#retryBtn").addEventListener("click", startGame);
+$("#winContinueBtn").addEventListener("click", runVictoryText);
+$("#victoryContinueBtn").addEventListener("click", startTrivia);
+
+$("#nextBtn").addEventListener("click", () => {
+  if (qIndex < TRIVIA.length - 1) {
+    qIndex++;
+    renderQuestion();
+  } else {
+    showResult();
+  }
+});
+$("#toFinalBtn").addEventListener("click", runFinalText);
+
+$("#mobileLegendBtn").addEventListener("click", () => {
+  $("#finalAction").classList.add("hidden");
+  $("#finalFinale").classList.remove("hidden");
+  confetti();
+  SFX.win();
+});
+$("#replayBtn").addEventListener("click", () => {
+  startTrivia();          // replay the trivia, or call runIntro() for the very top
+});
+
+/* --- sound toggle --- */
+$("#soundBtn").addEventListener("click", () => {
+  SFX.muted = !SFX.muted;
+  $("#soundBtn").innerHTML = SFX.muted ? "&#128263;" : "&#128266;";
+  if (!SFX.muted) SFX.beep(880, 0.08);
+});
+
+/* --- pixel music player (songs in ./music) --- */
+const SONGS = [
+  { src: "music/01-late-night-talking.flac", title: "Harry Styles - Late Night Talking" },
+  { src: "music/02-common.mp3",               title: "ZAYN - Common" },
+  { src: "music/03-harry-cd1-track7.flac",    title: "Harry Styles - CD 1 Track 7" },
+  { src: "music/04-little-things.mp3",        title: "One Direction - Little Things" }
+];
+const music = new Audio();
+music.preload = "none";               // nothing downloads until you press play
+let songIndex = 0;
+
+function renderMusic() {
+  $("#musicTitle").textContent = SONGS[songIndex].title;
+  $("#musicCount").textContent = (songIndex + 1) + "/" + SONGS.length;
+  $("#musicPlay").innerHTML = music.paused ? "&#9654;" : "&#9646;&#9646;";
+  $("#musicPlayer").classList.toggle("playing", !music.paused);
+}
+function loadSong(i, autoplay) {
+  songIndex = ((i % SONGS.length) + SONGS.length) % SONGS.length;
+  music.src = SONGS[songIndex].src;
+  renderMusic();
+  if (autoplay) music.play().catch(() => {});   // play/pause events keep the UI in sync
+}
+music.addEventListener("play", renderMusic);
+music.addEventListener("pause", renderMusic);
+music.addEventListener("ended", () => loadSong(songIndex + 1, true));   // auto-next
+music.addEventListener("timeupdate", () => {
+  $("#musicBarFill").style.width =
+    (music.duration ? (music.currentTime / music.duration) * 100 : 0).toFixed(1) + "%";
+});
+music.addEventListener("error", () => {
+  console.warn("[music] can't play (missing file or unsupported format):", music.src);
+  $("#musicTitle").textContent = "can't play this file :(";
+});
+
+$("#musicPlay").addEventListener("click", () => {
+  if (music.paused) music.play().catch(() => {});
+  else music.pause();
+});
+$("#musicPrev").addEventListener("click", () => {
+  if (music.currentTime > 3) { music.currentTime = 0; return; }   // first press restarts
+  loadSong(songIndex - 1, true);
+});
+$("#musicNext").addEventListener("click", () => loadSong(songIndex + 1, true));
+
+loadSong(0, false);                   // set up the first track (silent until ▶)
+renderMusic();
+
+/* ==========================================================================
+   11. BOOT
+   ========================================================================== */
+loadSprite().then((img) => {
+  serahSprite = img;
+  const src = img && img.src;
+  ["#introSprite", "#victorySprite", "#finalSprite"].forEach((sel) => {
+    if (src) $(sel).src = src;
+  });
+  $("#introHint").textContent = "click / tap / press SPACE to start";
+});
+
+resize();
+window.addEventListener("load", resize);   // re-measure once fonts/layout settle
+runIntro();
+requestAnimationFrame(loop);
+</script>
+</body>
+</html>
